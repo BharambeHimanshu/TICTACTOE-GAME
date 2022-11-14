@@ -1,7 +1,12 @@
+import React from "react"
+import Board from "./components/Board"
+import "./Styles/root.scss"
+
 export default function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div className="app">
+    <h1>Tic Tac Toe</h1>
+    <Board /> 
+    </div>
   )
 }
