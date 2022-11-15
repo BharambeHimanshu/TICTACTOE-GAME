@@ -5,55 +5,66 @@ import StatusMessage from "./components/StatusMessage"
 import "./Styles/root.scss"
 import  { calculateWinner } from "./helpers"
 
-const NEW_GAME =[
-  {board: Array(9).fill(null) , isNext:true}
-]
 
-export default function App() {
+const NEW_GAME = [{ board: Array(9).fill(null), isXNext: true }];
+
+export default function App () {
   const [history, setHistory] = useState(NEW_GAME);
+  const [currentMove, setCurrentMove] = useState(0);
+  const current = history[currentMove];
 
-  const[currentMove,setCurrentMove] = useState(0);
-
-  const current = history[currentMove]
-
-  const {winner , winningSquares} = calculateWinner(current.board);
+  const { winner, winningSquares } = calculateWinner(current.board);
 
   const handleSquareClick = position => {
-      if(current.board[position] || winner) {
-          return;
-      }
-      setHistory(prev => {
+    if (current.board[position] || winner) {
+      return;
+    }
 
-        const last = prev[prev.length -1]; 
-          const newBoard = last.board.map((square, pos) => {
-              if(pos === position) {
-                  return  last.isXNext ? 'X' : 'O';
-              }
-              return square;
-          });
+    setHistory(prev => {
+      const last = prev[prev.length - 1];
 
-          return prev.concat({ board:newBoard,isXNext: !last.isXNext})
+      const newBoard = last.board.map((square, pos) => {
+        if (pos === position) {
+          return last.isXNext ? 'X' : 'O';
+        }
+
+        return square;
       });
 
-      setCurrentMove(prev => prev + 1)
-  };
-  
-  const moveTo = (move) => {
-    setCurrentMove(move)
+      return prev.concat({ board: newBoard, isXNext: !last.isXNext });
+    });
 
-  }
+    setCurrentMove(prev => prev + 1);
+  };
+
+  const moveTo = move => {
+    setCurrentMove(move);
+  };
 
   const onNewGame = () => {
-    setHistory(NEW_GAME)
-    setCurrentMove(0)
-  }
+    setHistory(NEW_GAME);
+    setCurrentMove(0);
+  };
+
   return (
     <div className="app">
-    <h1>TIC TAC TOE</h1>
-    <StatusMessage winner={winner} current={current} />
-    <Board  board={current.board} handleSquareClick={handleSquareClick} winningSquares={winningSquares}/> 
-    <button type="button" onClick={onNewGame}>Start New Game</button>
-    <History history={history} moveTo={moveTo} currentMove={currentMove} />
+      <h2 style={{fontWeight: 'bold'}}>TIC <span className="text-green">TAC</span> TOE</h2>
+      <StatusMessage winner={winner} current={current} />
+      <Board
+        board={current.board}
+        handleSquareClick={handleSquareClick}
+        winningSquares={winningSquares}
+      />
+      <button
+        type="button"
+        onClick={onNewGame}
+        className={`btn-reset ${winner ? 'active' : ''}`}
+      >
+        Start new game
+      </button>
+      <h2 style={{fontWeight: 'normal'}}>Current Game History</h2>
+      <History history={history} moveTo={moveTo} currentMove={currentMove} />
+      <div className="bg-balls"/>
     </div>
-  )
-}
+  );
+};
